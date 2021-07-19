@@ -14,6 +14,11 @@ public class CharacterMovementController : MonoBehaviour
 
     public bool sprint = false;
 
+    //calculate player velocity variables
+    Vector3 playerVelocity;
+    Vector3 prevPos;
+    Vector3 currPos;
+
 
     private void Awake()
     {
@@ -25,8 +30,17 @@ public class CharacterMovementController : MonoBehaviour
     void Start()
     {
 
-        Cursor.lockState = CursorLockMode.Locked;
+        
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        prevPos = currPos = transform.position;
+    }
+
+    private void FixedUpdate()
+    {
+        currPos = transform.position;
+        playerVelocity = (currPos - prevPos) / Time.fixedDeltaTime;
+        prevPos = currPos;
     }
 
     // Update is called once per frame
@@ -51,6 +65,8 @@ public class CharacterMovementController : MonoBehaviour
 
         if (direction.magnitude > 0.1f)
         {
+            _animator.SetBool("Moving", true);
+
             float targetDirection = cam.eulerAngles.y;
 
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetDirection, ref turnSmoothVelocity, turnSmoothTime);
@@ -58,6 +74,13 @@ public class CharacterMovementController : MonoBehaviour
             direction *= _speed * Time.deltaTime;
             transform.Translate(direction);
         }
+        else{
+            _animator.SetBool("Moving", false);
+        }
+
+        Vector3 localPlayerVelocity = transform.InverseTransformDirection(playerVelocity);
+        //float velocityX = Vector3.Dot(direction.normalized, transform.InverseTransformDirection(transform.forward));
+        //float velocityZ = Vector3.Dot(direction.normalized, transform.InverseTransformDirection(transform.right));
 
         _animator.SetFloat("VelocityX", horizontal, 0.1f, Time.deltaTime);
         _animator.SetFloat("VelocityZ", vertical, 0.1f, Time.deltaTime);
