@@ -6,10 +6,16 @@ public class RockController : MonoBehaviour, IEarthInteractions
 {
     float projectileTravelTime = 1.5f;
     float projectileSpeed = 30f;
+    int damage = 1;
 
     public void Push(Transform source)
     {
         StartCoroutine(ApplyForwardForceToObject(source));
+    }
+
+    public void ApplyDamage(int value)
+    {
+        //do nothing as this projectile will not recieve damage
     }
 
     private void Start()
@@ -20,8 +26,13 @@ public class RockController : MonoBehaviour, IEarthInteractions
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.tag == "Floor" || collision.transform.tag == "EarthManipulate")
+        if (collision.transform.tag == "Floor")
         {
+            Destroy(this.gameObject);
+        }
+        if(collision.transform.tag == "EarthManipulate")
+        {
+            collision.gameObject.GetComponent<IEarthInteractions>().ApplyDamage(damage);
             Destroy(this.gameObject);
         }
     }

@@ -7,6 +7,7 @@ public class WallController : MonoBehaviour, IEarthInteractions
     float projectileTravelTime = 1.5f;
     float killTime = 5f;
     float projectileSpeed = 30f;
+    public int wallHealth = 3;
 
     private void Start()
     {
@@ -24,6 +25,14 @@ public class WallController : MonoBehaviour, IEarthInteractions
     public void Push(Transform source)
     {
         StartCoroutine(ApplyForwardForceToObject(source));
+    }
+
+    public void ApplyDamage(int damage)
+    {
+        wallHealth -= damage;
+        if(wallHealth <= 0){
+            Destroy(this.gameObject);
+        }
     }
 
     public IEnumerator ApplyForwardForceToObject(Transform player)

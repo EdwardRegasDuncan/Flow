@@ -5,4 +5,6 @@ using UnityEngine;
 public interface IEarthInteractions
 {
     void Push(Transform source);
+
+    void ApplyDamage(int value);
 }
